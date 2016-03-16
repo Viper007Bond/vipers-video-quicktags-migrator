@@ -53,7 +53,7 @@ add_action( 'plugins_loaded', 'VipersVideoQuicktagsMigrator' );
 function VipersVideoQuicktagsMigrator() {
 	global $VipersVideoQuicktagsMigrator;
 
-	if ( ! isset( $VipersVideoQuicktagsMigrator ) || is_a( $VipersVideoQuicktagsMigrator, 'VipersVideoQuicktagsMigrator' ) ) {
+	if ( ! isset( $VipersVideoQuicktagsMigrator ) || ! is_a( $VipersVideoQuicktagsMigrator, 'VipersVideoQuicktagsMigrator' ) ) {
 		$VipersVideoQuicktagsMigrator = new VipersVideoQuicktagsMigrator();
 	}
 
