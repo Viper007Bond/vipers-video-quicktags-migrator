@@ -21,6 +21,8 @@ class VipersVideoQuicktagsMigrator {
 
 			return;
 		}
+
+		$this->add_shortcodes();
 	}
 
 	public function display_vvq_active_warning() {
@@ -45,6 +47,38 @@ class VipersVideoQuicktagsMigrator {
 				__( "<a href='%s'><strong>Please disable the Viper's Video Quicktags plugin.</strong></a> You have the migrator plugin installed and activated and it better handles all of the functionality of the old plugin.", 'vipers-video-quicktags-migrator' ),
 				esc_url( $deactivate_url )
 			) . '</p></div>';
+	}
+
+	public function add_shortcodes() {
+		$shortcodes = array(
+			'youtube',
+			'googlevideo',
+			'gvideo',
+			'dailymotion',
+			'vimeo',
+			'veoh',
+			'viddler',
+			'metacafe',
+			'blip.tv',
+			'bliptv',
+			'flickrvideo',
+			'ifilm',
+			'spike',
+			'myspace',
+			'stage6',
+			'flv',
+			'quicktime',
+			'flash',
+			'videofile',
+			'video',
+			'avi',
+			'mpeg',
+			'wmv',
+		);
+
+		foreach ( $shortcodes as $shortcode ) {
+			add_shortcode( $shortcode, array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		}
 	}
 }
 
