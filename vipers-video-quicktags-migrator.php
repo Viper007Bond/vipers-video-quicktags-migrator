@@ -25,8 +25,7 @@ class VipersVideoQuicktagsMigrator {
 			return;
 		}
 
-		$this->add_shortcodes();
-		$this->register_embed_handlers();
+		$this->add_shortcodes_and_embed_handlers();
 	}
 
 	/**
@@ -61,13 +60,17 @@ class VipersVideoQuicktagsMigrator {
 
 	/**
 	 * Registers all of the shortcodes that this plugin will handle.
+	 *
+	 * Additionally Metacafe isn't supported by WordPress core but it was easy to add custom
+	 * support for it, so it's callback handler is also registered here.
 	 */
-	public function add_shortcodes() {
+	public function add_shortcodes_and_embed_handlers() {
 		// These ones need special handling, such as allowing a video ID instead of a full URL
 		add_shortcode( 'youtube', array( $this, 'shortcode_youtube' ) );
 		add_shortcode( 'dailymotion', array( $this, 'shortcode_dailymotion' ) );
 		add_shortcode( 'vimeo', array( $this, 'shortcode_vimeo' ) );
 		add_shortcode( 'metacafe', array( $this, 'shortcode_metacafe' ) );
+		wp_embed_register_handler( 'metacafe', '#https?://(www\.)?metacafe\.com/watch/([\d-]+)#i', array( $this, 'embed_handler_metacafe' ) );
 
 		// These can just be handled by WordPress core directly
 		// They'll either embed or they'll end up as a clickable link
@@ -92,16 +95,6 @@ class VipersVideoQuicktagsMigrator {
 		add_shortcode( 'ifilm', array( $this, 'shortcode_dead_service' ) );
 		add_shortcode( 'spike', array( $this, 'shortcode_dead_service' ) );
 		add_shortcode( 'myspace', array( $this, 'shortcode_dead_service' ) );
-	}
-
-	/**
-	 * Some services that this plugin provides support for aren't supported by WordPress core
-	 * and also don't support oEmbed, or I don't trust them enough to use their oEmbed.
-	 * So instead we'll provide support for them manually using embed callbacks.
-	 * This function registers all of these with WordPress.
-	 */
-	public function register_embed_handlers() {
-		wp_embed_register_handler( 'metacafe', '#https?://(www\.)?metacafe\.com/watch/([\d-]+)#i', array( $this, 'embed_handler_metacafe' ) );
 	}
 
 	/**
