@@ -47,7 +47,8 @@ class VipersVideoQuicktagsMigrator {
 				),
 				'deactivate-plugin_' . $vvq_file
 			);
-		} else {
+		}
+		else {
 			$deactivate_url = add_query_arg( 's', rawurlencode( "Viper's Video Quicktags" ), admin_url( 'plugins.php' ) );
 		}
 
@@ -138,6 +139,7 @@ class VipersVideoQuicktagsMigrator {
 			'&#8217;' => "'",
 			'&#038;'  => '&',
 		);
+
 		$attr[0] = str_replace( array_keys( $find_and_replace ), array_values( $find_and_replace ), $attr[0] );
 
 		// Equals sign between the shortcode tag and value with value inside of quotes
@@ -194,4 +196,5 @@ function VipersVideoQuicktagsMigrator() {
 
 	return $VipersVideoQuicktagsMigrator;
 }
+
 add_action( 'plugins_loaded', 'VipersVideoQuicktagsMigrator' );
