@@ -65,9 +65,7 @@ class VipersVideoQuicktagsMigrator {
 		// These ones need special handling, such as allowing a video ID instead of a full URL
 		add_shortcode( 'youtube', array( $this, 'shortcode_youtube' ) );
 		add_shortcode( 'dailymotion', array( $this, 'shortcode_dailymotion' ) );
-		//add_shortcode( 'vimeo', array( $this, 'shortcode_vimeo' ) );
-		//add_shortcode( 'veoh', array( $this, 'shortcode_veoh' ) );
-		//add_shortcode( 'viddler', array( $this, 'shortcode_viddler' ) );
+		add_shortcode( 'vimeo', array( $this, 'shortcode_vimeo' ) );
 		//add_shortcode( 'metacafe', array( $this, 'shortcode_metacafe' ) );
 		//add_shortcode( 'blip.tv', array( $this, 'shortcode_bliptv' ) );
 		//add_shortcode( 'bliptv', array( $this, 'shortcode_bliptv' ) );
@@ -76,20 +74,23 @@ class VipersVideoQuicktagsMigrator {
 		//add_shortcode( 'spike', array( $this, 'shortcode_ifilm' ) );
 		//add_shortcode( 'myspace', array( $this, 'shortcode_myspace' ) );
 
-		// These services are dead
-		//add_shortcode( 'googlevideo', array( $this, 'shortcode_dead_service' ) );
-		//add_shortcode( 'gvideo', array( $this, 'shortcode_dead_service' ) );
-		//add_shortcode( 'stage6', array( $this, 'shortcode_dead_service' ) );
+		// These services are dead or no longer supported by this plugin
+		add_shortcode( 'googlevideo', array( $this, 'shortcode_dead_service' ) );
+		add_shortcode( 'gvideo', array( $this, 'shortcode_dead_service' ) );
+		add_shortcode( 'stage6', array( $this, 'shortcode_dead_service' ) );
+		add_shortcode( 'veoh', array( $this, 'shortcode_dead_service' ) );
+		add_shortcode( 'viddler', array( $this, 'shortcode_dead_service' ) );
 
 		// The rest of these can just be handled by WordPress core directly
-		//add_shortcode( 'videofile', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		//add_shortcode( 'video', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		//add_shortcode( 'avi', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		//add_shortcode( 'mpeg', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		//add_shortcode( 'wmv', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		//add_shortcode( 'flash', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		//add_shortcode( 'flv', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		//add_shortcode( 'quicktime', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		// They'll either embed or they'll end up as a clickable link
+		add_shortcode( 'videofile', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'video', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'avi', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'mpeg', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'wmv', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'flash', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'flv', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'quicktime', array( $GLOBALS['wp_embed'], 'shortcode' ) );
 	}
 
 	/**
@@ -188,7 +189,8 @@ class VipersVideoQuicktagsMigrator {
 	 * @param string       $url  The URL attempting to be embedded.
 	 * @param string       $tag  The shortcode tag being used. This will be "dailymotion".
 	 *
-	 * @return mixed
+	 * @return string|false The embed HTML on success, otherwise the original URL.
+	 *                      `$GLOBALS['wp_embed']->maybe_make_link()` can return false on failure.
 	 */
 	public function shortcode_dailymotion( $attr, $url, $tag ) {
 		list( $attr, $url ) = $this->handle_no_name_attribute( $attr, $url );
@@ -203,6 +205,53 @@ class VipersVideoQuicktagsMigrator {
 			$url = 'http://www.dailymotion.com/video/' . $url;
 		}
 
+		return $GLOBALS['wp_embed']->shortcode( $attr, $url, $tag );
+	}
+
+	/**
+	 * Vimeo embeds. The actual embed is handled directly by WordPress core.
+	 *
+	 * @param array|string $attr Shortcode attributes. Optional.
+	 * @param string       $url  The URL attempting to be embedded.
+	 * @param string       $tag  The shortcode tag being used. This will be "vimeo".
+	 *
+	 * @return string|false The embed HTML on success, otherwise the original URL.
+	 *                      `$GLOBALS['wp_embed']->maybe_make_link()` can return false on failure.
+	 */
+	public function shortcode_vimeo( $attr, $url, $tag ) {
+		list( $attr, $url ) = $this->handle_no_name_attribute( $attr, $url );
+
+		// Convert plain video IDs into URLs
+		if ( ! $this->is_url( $url ) ) {
+			$url = 'https://vimeo.com/' . $url;
+		}
+
+		return $GLOBALS['wp_embed']->shortcode( $attr, $url, $tag );
+	}
+
+	/**
+	 * Handles the embeds from services that have shut down or just are no longer supported by this plugin.
+	 *
+	 * If just a video ID was used, then an error message is shown.
+	 * If a full URL was used, then it's handed off to WordPress core as a last-ditch attempt at embedding.
+	 *
+	 * @param array|string $attr Shortcode attributes. Optional.
+	 * @param string       $url  The URL attempting to be embedded.
+	 * @param string       $tag  The shortcode tag being used.
+	 *
+	 * @return string|false The embed HTML on success, otherwise the original URL.
+	 *                      `$GLOBALS['wp_embed']->maybe_make_link()` can return false on failure.
+	 */
+	public function shortcode_dead_service( $attr, $url, $tag ) {
+		list( $attr, $url ) = $this->handle_no_name_attribute( $attr, $url );
+
+		// Return a plain message for non-URL embeds as there's nothing that can be done with them.
+		if ( ! $this->is_url( $url ) ) {
+			return apply_filters( 'vvq_dead_service_message', '<em>' . __( 'A video used to be embedded here but the service that it was hosted on has shut down.') . '</em>' );
+		}
+
+		// Otherwise let WordPress core handle it, likely resulting in a plain, clickable link.
+		// This lets visitors click through if they want, but also other plugins to provide embed support somehow.
 		return $GLOBALS['wp_embed']->shortcode( $attr, $url, $tag );
 	}
 }
