@@ -65,15 +65,15 @@ class VipersVideoQuicktagsMigrator {
 	 * support for it, so it's callback handler is also registered here.
 	 */
 	public function add_shortcodes_and_embed_handlers() {
-		// These ones need special handling, such as allowing a video ID instead of a full URL
+		// These ones need special handling, such as allowing a video ID instead of a full URL.
 		add_shortcode( 'youtube', array( $this, 'shortcode_youtube' ) );
 		add_shortcode( 'dailymotion', array( $this, 'shortcode_dailymotion' ) );
 		add_shortcode( 'vimeo', array( $this, 'shortcode_vimeo' ) );
 		add_shortcode( 'metacafe', array( $this, 'shortcode_metacafe' ) );
 		wp_embed_register_handler( 'metacafe', '#https?://(www\.)?metacafe\.com/watch/([\d-]+)#i', array( $this, 'embed_handler_metacafe' ) );
 
-		// These can just be handled by WordPress core directly
-		// They'll either embed or they'll end up as a clickable link
+		// These can just be handled by WordPress core directly.
+		// They'll either embed or they'll end up as a clickable link.
 		add_shortcode( 'flickrvideo', array( $GLOBALS['wp_embed'], 'shortcode' ) );
 		add_shortcode( 'videofile', array( $GLOBALS['wp_embed'], 'shortcode' ) );
 		add_shortcode( 'video', array( $GLOBALS['wp_embed'], 'shortcode' ) );
@@ -84,7 +84,8 @@ class VipersVideoQuicktagsMigrator {
 		add_shortcode( 'flv', array( $GLOBALS['wp_embed'], 'shortcode' ) );
 		add_shortcode( 'quicktime', array( $GLOBALS['wp_embed'], 'shortcode' ) );
 
-		// These services are dead or no longer supported by this plugin
+		// These services are dead or no longer supported by this plugin due to unpopularity.
+		// If a full video URL was passed to the shortcode, then it'll end up as a clickable link.
 		add_shortcode( 'googlevideo', array( $this, 'shortcode_dead_service' ) );
 		add_shortcode( 'gvideo', array( $this, 'shortcode_dead_service' ) );
 		add_shortcode( 'stage6', array( $this, 'shortcode_dead_service' ) );
