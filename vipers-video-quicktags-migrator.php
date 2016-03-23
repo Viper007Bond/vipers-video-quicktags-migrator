@@ -64,7 +64,7 @@ class VipersVideoQuicktagsMigrator {
 	public function add_shortcodes() {
 		// These ones need special handling, such as allowing a video ID instead of a full URL
 		add_shortcode( 'youtube', array( $this, 'shortcode_youtube' ) );
-		//add_shortcode( 'dailymotion', array( $this, 'shortcode_dailymotion' ) );
+		add_shortcode( 'dailymotion', array( $this, 'shortcode_dailymotion' ) );
 		//add_shortcode( 'vimeo', array( $this, 'shortcode_vimeo' ) );
 		//add_shortcode( 'veoh', array( $this, 'shortcode_veoh' ) );
 		//add_shortcode( 'viddler', array( $this, 'shortcode_viddler' ) );
@@ -176,6 +176,31 @@ class VipersVideoQuicktagsMigrator {
 		// Convert plain video IDs into URLs
 		if ( ! $this->is_url( $url ) ) {
 			$url = 'https://www.youtube.com/watch?v=' . $url;
+		}
+
+		return $GLOBALS['wp_embed']->shortcode( $attr, $url, $tag );
+	}
+
+	/**
+	 * Dailymotion embeds. The actual embed is handled directly by WordPress core.
+	 *
+	 * @param array|string $attr Shortcode attributes. Optional.
+	 * @param string       $url  The URL attempting to be embedded.
+	 * @param string       $tag  The shortcode tag being used. This will be "dailymotion".
+	 *
+	 * @return mixed
+	 */
+	public function shortcode_dailymotion( $attr, $url, $tag ) {
+		list( $attr, $url ) = $this->handle_no_name_attribute( $attr, $url );
+
+		// [dailymotion id=x3x9u8d]
+		if ( ! empty( $attr['id'] ) ) {
+			$url = $attr['id'];
+		}
+
+		// Convert plain video IDs into URLs
+		if ( ! $this->is_url( $url ) ) {
+			$url = 'http://www.dailymotion.com/video/' . $url;
 		}
 
 		return $GLOBALS['wp_embed']->shortcode( $attr, $url, $tag );
