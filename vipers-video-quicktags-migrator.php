@@ -104,16 +104,16 @@ class VipersVideoQuicktagsMigrator {
 	 * Example: [youtube https://www.youtube.com/watch?v=EYs_FckMqow]
 	 *
 	 * With this format, the URL ends up being stored as $attr[0]. This helper function takes
-	 * that value and overwrites $content (where the URL should be), and then returns them both.
+	 * that value and overwrites $url (where the URL should be), and then returns them both.
 	 *
-	 * @param string|array $attr    An empty string if there's no attributes in the shortcode, otherwise an array.
-	 * @param string       $content The existing shortcode content (between the shortcodes).
+	 * @param string|array $attr An empty string if there's no attributes in the shortcode, otherwise an array.
+	 * @param string       $url  The existing shortcode content (between the shortcodes), which should be the URL.
 	 *
 	 * @return array An array of the attributes and content variables.
 	 */
-	public function handle_no_name_attribute( $attr, $content ) {
+	public function handle_no_name_attribute( $attr, $url ) {
 		if ( ! is_array( $attr ) || empty( $attr[0] ) ) {
-			return array( $attr, $content );
+			return array( $attr, $url );
 		}
 
 		// Undo some of what wptexturize() did to the value
@@ -131,29 +131,49 @@ class VipersVideoQuicktagsMigrator {
 
 		// Equals sign between the shortcode tag and value with value inside of quotes
 		if ( preg_match( '#=("|\')(.*?)\1#', $attr[0], $match ) ) {
-			$content = $match[2];
+			$url = $match[2];
 		}
 		// Equals sign between the shortcode tag and value with value unquoted
 		elseif ( '=' == substr( $attr[0], 0, 1 ) ) {
-			$content = substr( $attr[0], 1 );
+			$url = substr( $attr[0], 1 );
 		}
 		// Normal with a space between the shortcode and the value
 		else {
-			$content = $attr[0];
+			$url = $attr[0];
 		}
 
 		unset( $attr[0] );
 
-		return array( $attr, $content );
+		return array( $attr, $url );
 	}
 
-	public function shortcode_youtube( $attr, $content, $tag ) {
-		list( $attr, $content ) = $this->handle_no_name_attribute( $attr, $content );
+	/**
+	 * YouTube embeds. The actual embed is handled directly by WordPress core.
+	 *
+	 * @param array|string $attr Shortcode attributes. Optional.
+	 * @param string       $url  The URL attempting to be embedded.
+	 * @param string       $tag  The shortcode tag being used. This will be "youtube".
+	 *
+	 * @return string|false The embed HTML on success, otherwise the original URL.
+	 *                      `$GLOBALS['wp_embed']->maybe_make_link()` can return false on failure.
+	 */
+	public function shortcode_youtube( $attr, $url, $tag ) {
+		list( $attr, $url ) = $this->handle_no_name_attribute( $attr, $url );
+
+		// Convert plain video IDs into URLs
+		if ( ! $this->is_url( $url ) ) {
+			$url = 'https://www.youtube.com/watch?v=' . $url;
+		}
+
+		return $GLOBALS['wp_embed']->shortcode( $attr, $url, $tag );
 	}
 }
 
-add_action( 'plugins_loaded', 'VipersVideoQuicktagsMigrator' );
-
+/**
+ * Spins up an instance of the plugin's class if one doesn't already exist, then returns it.
+ *
+ * @return VipersVideoQuicktagsMigrator The instance of this class.
+ */
 function VipersVideoQuicktagsMigrator() {
 	global $VipersVideoQuicktagsMigrator;
 
@@ -163,3 +183,4 @@ function VipersVideoQuicktagsMigrator() {
 
 	return $VipersVideoQuicktagsMigrator;
 }
+add_action( 'plugins_loaded', 'VipersVideoQuicktagsMigrator' );
