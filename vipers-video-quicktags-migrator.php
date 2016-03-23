@@ -68,11 +68,7 @@ class VipersVideoQuicktagsMigrator {
 		add_shortcode( 'dailymotion', array( $this, 'shortcode_dailymotion' ) );
 		add_shortcode( 'vimeo', array( $this, 'shortcode_vimeo' ) );
 		add_shortcode( 'metacafe', array( $this, 'shortcode_metacafe' ) );
-		//add_shortcode( 'blip.tv', array( $this, 'shortcode_bliptv' ) );
-		//add_shortcode( 'bliptv', array( $this, 'shortcode_bliptv' ) );
 		//add_shortcode( 'flickrvideo', array( $this, 'shortcode_flickrvideo' ) );
-		//add_shortcode( 'ifilm', array( $this, 'shortcode_ifilm' ) );
-		//add_shortcode( 'spike', array( $this, 'shortcode_ifilm' ) );
 		//add_shortcode( 'myspace', array( $this, 'shortcode_myspace' ) );
 
 		// These services are dead or no longer supported by this plugin
@@ -81,6 +77,10 @@ class VipersVideoQuicktagsMigrator {
 		add_shortcode( 'stage6', array( $this, 'shortcode_dead_service' ) );
 		add_shortcode( 'veoh', array( $this, 'shortcode_dead_service' ) );
 		add_shortcode( 'viddler', array( $this, 'shortcode_dead_service' ) );
+		add_shortcode( 'blip.tv', array( $this, 'shortcode_dead_service' ) );
+		add_shortcode( 'bliptv', array( $this, 'shortcode_dead_service' ) );
+		add_shortcode( 'ifilm', array( $this, 'shortcode_dead_service' ) );
+		add_shortcode( 'spike', array( $this, 'shortcode_dead_service' ) );
 
 		// The rest of these can just be handled by WordPress core directly
 		// They'll either embed or they'll end up as a clickable link
