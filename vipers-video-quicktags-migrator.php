@@ -12,6 +12,9 @@ Author URI:   http://www.viper007bond.com/
 **************************************************************************/
 
 class VipersVideoQuicktagsMigrator {
+	/**
+	 * VipersVideoQuicktagsMigrator constructor.
+	 */
 	function __construct() {
 		// To avoid weirdness, bail if the original plugin is still active
 		if ( class_exists( 'VipersVideoQuicktags' ) ) {
@@ -25,6 +28,11 @@ class VipersVideoQuicktagsMigrator {
 		$this->add_shortcodes();
 	}
 
+	/**
+	 * If the original Viper's Video Quicktags plugin is active, this function gets called in order
+	 * to output a warning message in the admin area. Included in the message is a link that will
+	 * deactivate the other plugin, or at least take the user to the plugin page.
+	 */
 	public function display_vvq_active_warning() {
 		$vvq_file = 'vipers-video-quicktags/vipers-video-quicktags.php';
 
@@ -49,6 +57,9 @@ class VipersVideoQuicktagsMigrator {
 			) . '</p></div>';
 	}
 
+	/**
+	 * Registers all of the shortcodes that this plugin will handle.
+	 */
 	public function add_shortcodes() {
 		// These ones need special handling, such as allowing a video ID instead of a full URL
 		add_shortcode( 'youtube', array( $this, 'shortcode_youtube' ) );
