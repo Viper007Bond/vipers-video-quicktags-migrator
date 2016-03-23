@@ -68,8 +68,18 @@ class VipersVideoQuicktagsMigrator {
 		add_shortcode( 'dailymotion', array( $this, 'shortcode_dailymotion' ) );
 		add_shortcode( 'vimeo', array( $this, 'shortcode_vimeo' ) );
 		add_shortcode( 'metacafe', array( $this, 'shortcode_metacafe' ) );
-		//add_shortcode( 'flickrvideo', array( $this, 'shortcode_flickrvideo' ) );
-		//add_shortcode( 'myspace', array( $this, 'shortcode_myspace' ) );
+
+		// These can just be handled by WordPress core directly
+		// They'll either embed or they'll end up as a clickable link
+		add_shortcode( 'flickrvideo', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'videofile', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'video', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'avi', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'mpeg', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'wmv', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'flash', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'flv', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'quicktime', array( $GLOBALS['wp_embed'], 'shortcode' ) );
 
 		// These services are dead or no longer supported by this plugin
 		add_shortcode( 'googlevideo', array( $this, 'shortcode_dead_service' ) );
@@ -81,17 +91,7 @@ class VipersVideoQuicktagsMigrator {
 		add_shortcode( 'bliptv', array( $this, 'shortcode_dead_service' ) );
 		add_shortcode( 'ifilm', array( $this, 'shortcode_dead_service' ) );
 		add_shortcode( 'spike', array( $this, 'shortcode_dead_service' ) );
-
-		// The rest of these can just be handled by WordPress core directly
-		// They'll either embed or they'll end up as a clickable link
-		add_shortcode( 'videofile', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		add_shortcode( 'video', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		add_shortcode( 'avi', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		add_shortcode( 'mpeg', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		add_shortcode( 'wmv', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		add_shortcode( 'flash', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		add_shortcode( 'flv', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		add_shortcode( 'quicktime', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'myspace', array( $this, 'shortcode_dead_service' ) );
 	}
 
 	/**
