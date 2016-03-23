@@ -26,6 +26,7 @@ class VipersVideoQuicktagsMigrator {
 		}
 
 		$this->add_shortcodes();
+		$this->register_embed_handlers();
 	}
 
 	/**
@@ -66,7 +67,7 @@ class VipersVideoQuicktagsMigrator {
 		add_shortcode( 'youtube', array( $this, 'shortcode_youtube' ) );
 		add_shortcode( 'dailymotion', array( $this, 'shortcode_dailymotion' ) );
 		add_shortcode( 'vimeo', array( $this, 'shortcode_vimeo' ) );
-		//add_shortcode( 'metacafe', array( $this, 'shortcode_metacafe' ) );
+		add_shortcode( 'metacafe', array( $this, 'shortcode_metacafe' ) );
 		//add_shortcode( 'blip.tv', array( $this, 'shortcode_bliptv' ) );
 		//add_shortcode( 'bliptv', array( $this, 'shortcode_bliptv' ) );
 		//add_shortcode( 'flickrvideo', array( $this, 'shortcode_flickrvideo' ) );
@@ -91,6 +92,16 @@ class VipersVideoQuicktagsMigrator {
 		add_shortcode( 'flash', array( $GLOBALS['wp_embed'], 'shortcode' ) );
 		add_shortcode( 'flv', array( $GLOBALS['wp_embed'], 'shortcode' ) );
 		add_shortcode( 'quicktime', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+	}
+
+	/**
+	 * Some services that this plugin provides support for aren't supported by WordPress core
+	 * and also don't support oEmbed, or I don't trust them enough to use their oEmbed.
+	 * So instead we'll provide support for them manually using embed callbacks.
+	 * This function registers all of these with WordPress.
+	 */
+	public function register_embed_handlers() {
+		wp_embed_register_handler( 'metacafe', '#https?://(www\.)?metacafe\.com/watch/([\d-]+)#i', array( $this, 'embed_handler_metacafe' ) );
 	}
 
 	/**
@@ -230,6 +241,42 @@ class VipersVideoQuicktagsMigrator {
 	}
 
 	/**
+	 * Metacafe embeds. The actual embed is handled by a separate callback function.
+	 *
+	 * @param array|string $attr Shortcode attributes. Optional.
+	 * @param string       $url  The URL attempting to be embedded.
+	 * @param string       $tag  The shortcode tag being used. This will be "metacafe".
+	 *
+	 * @return string|false The embed HTML on success, otherwise the original URL.
+	 *                      `$GLOBALS['wp_embed']->maybe_make_link()` can return false on failure.
+	 */
+	public function shortcode_metacafe( $attr, $url, $tag ) {
+		list( $attr, $url ) = $this->handle_no_name_attribute( $attr, $url );
+
+		// Convert plain video IDs into URLs
+		if ( ! $this->is_url( $url ) ) {
+			$url = 'http://www.metacafe.com/watch/' . $url . '/'; // The trailing slash is important
+		}
+
+		// The embed will be handled by a callback registered using wp_embed_register_handler()
+		return $GLOBALS['wp_embed']->shortcode( $attr, $url, $tag );
+	}
+
+	/**
+	 * Metacafe video embed handler callback.
+	 *
+	 * @param array  $matches The RegEx matches from the provided regex when calling wp_embed_register_handler().
+	 * @param array  $attr    Embed attributes.
+	 * @param string $url     The original URL that was matched by the regex.
+	 * @param array  $rawattr The original unmodified attributes.
+	 *
+	 * @return string The embed HTML.
+	 */
+	public function embed_handler_metacafe( $matches, $attr, $url, $rawattr ) {
+		return '<iframe width="' . esc_attr( $attr['width'] ) . '" height="' . esc_attr( $attr['height'] ) . '" src="' . esc_url( 'http://www.metacafe.com/embed/' . $matches[2] . '/' ) . '" frameborder="0" allowfullscreen></iframe>';
+	}
+
+	/**
 	 * Handles the embeds from services that have shut down or just are no longer supported by this plugin.
 	 *
 	 * If just a video ID was used, then an error message is shown.
@@ -247,7 +294,7 @@ class VipersVideoQuicktagsMigrator {
 
 		// Return a plain message for non-URL embeds as there's nothing that can be done with them.
 		if ( ! $this->is_url( $url ) ) {
-			return apply_filters( 'vvq_dead_service_message', '<em>' . __( 'A video used to be embedded here but the service that it was hosted on has shut down.') . '</em>' );
+			return apply_filters( 'vvq_dead_service_message', '<em>' . __( 'A video used to be embedded here but the service that it was hosted on has shut down.' ) . '</em>' );
 		}
 
 		// Otherwise let WordPress core handle it, likely resulting in a plain, clickable link.
