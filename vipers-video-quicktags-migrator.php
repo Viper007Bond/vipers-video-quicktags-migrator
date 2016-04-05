@@ -17,6 +17,8 @@ class VipersVideoQuicktagsMigrator {
 	 * VipersVideoQuicktagsMigrator constructor.
 	 */
 	function __construct() {
+		load_plugin_textdomain( 'vipers-video-quicktags-migrator' );
+
 		// To avoid weirdness, bail if the original plugin is still active
 		if ( class_exists( 'VipersVideoQuicktags' ) ) {
 			if ( current_user_can( 'activate_plugins' ) ) {
