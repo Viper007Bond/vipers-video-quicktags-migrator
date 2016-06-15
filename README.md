@@ -1,6 +1,6 @@
 # Viper's Video Quicktags Migrator
 
-*Work in progress.*
+*Work in progress. If you don't want to check out a copy using Git, you can click the "Download ZIP" button to the upper-right.*
 
 [Viper's Video Quicktags](https://wordpress.org/plugins/vipers-video-quicktags/) hasn't been updated in years, largely because I contributed a patch to WordPress core that adds [embeds support](http://codex.wordpress.org/Embeds) right out of the box.
 
