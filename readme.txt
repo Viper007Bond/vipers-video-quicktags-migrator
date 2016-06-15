@@ -20,7 +20,7 @@ Instead this plugin will take over parsing those shortcodes, making use of the n
 
 Note: This plugin does not add any buttons to the editor like VVQ did as you no longer should need them. Just paste the video URL on its own line, [as documented in the Codex](http://codex.wordpress.org/Embeds).
 
-*Bug reports (but not support requests) and pull requests are welcomed [via GitHub](https://github.com/Viper007Bond/vipers-video-quicktags-migrator).*
+*Bug reports (but not support requests) and pull requests are welcomed [via GitHub](https://github.com/Viper007Bond/vipers-video-quicktags-migrator). Please use [the WordPress forums](https://wordpress.org/support/plugin/vipers-video-quicktags-migrator) for support.*
 
 == Installation ==
 
