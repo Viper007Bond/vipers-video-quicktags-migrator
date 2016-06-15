@@ -4,7 +4,7 @@
 
 Plugin Name:  Viper's Video Quicktags Migrator
 Plugin URI:   http://www.viper007bond.com/wordpress-plugins/vipers-video-quicktags/
-Version:      0.2016.04.04-alpha
+Version:      0.2016.06.14-alpha
 Description:  Parses legacy shortcodes from the retired Viper's Video Quicktags plugin using the embed functionality that's built directly into WordPress itself.
 Author:       Alex Mills (Viper007Bond)
 Author URI:   http://www.viper007bond.com/
@@ -64,7 +64,7 @@ class VipersVideoQuicktagsMigrator {
 	/**
 	 * Registers all of the shortcodes that this plugin will handle.
 	 *
-	 * Additionally Metacafe isn't supported by WordPress core but it was easy to add custom
+	 * Metacafe isn't supported by WordPress core but it was easy to add custom
 	 * support for it, so it's callback handler is also registered here.
 	 */
 	public function add_shortcodes_and_embed_handlers() {
@@ -112,7 +112,7 @@ class VipersVideoQuicktagsMigrator {
 	 * @return bool Whether the string looks like a URL or not.
 	 */
 	public function is_url( $string ) {
-		return (bool) preg_match( '#^https?://#i', $string );
+		return ( 0 === stripos( $string, 'http' ) );
 	}
 
 	/**
