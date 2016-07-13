@@ -15,6 +15,8 @@ Text Domain:  vipers-video-quicktags-migrator
 class VipersVideoQuicktagsMigrator {
 	/**
 	 * VipersVideoQuicktagsMigrator constructor.
+	 *
+	 * @since 1.0.0
 	 */
 	function __construct() {
 		load_plugin_textdomain( 'vipers-video-quicktags-migrator' );
@@ -37,6 +39,8 @@ class VipersVideoQuicktagsMigrator {
 	 * If the original Viper's Video Quicktags plugin is active, this function gets called in order
 	 * to output a warning message in the admin area. Included in the message is a link that will
 	 * deactivate the other plugin, or at least take the user to the plugin page.
+	 *
+	 * @since 1.0.0
 	 */
 	public function display_vvq_active_warning() {
 		$vvq_file = 'vipers-video-quicktags/vipers-video-quicktags.php';
@@ -67,6 +71,8 @@ class VipersVideoQuicktagsMigrator {
 	 *
 	 * Metacafe isn't supported by WordPress core but it was easy to add custom
 	 * support for it, so it's callback handler is also registered here.
+	 *
+	 * @since 1.0.0
 	 */
 	public function add_shortcodes_and_embed_handlers() {
 		// These ones need special handling, such as allowing a video ID instead of a full URL.
@@ -117,6 +123,8 @@ class VipersVideoQuicktagsMigrator {
 	 * This function should NOT be used for security purposes, rather
 	 * it's just a quick and dirty way to tell video IDs from video URLs.
 	 *
+	 * @since 1.0.0
+	 *
 	 * @param string $string The string to check.
 	 *
 	 * @return bool Whether the string looks like a URL or not.
@@ -136,6 +144,8 @@ class VipersVideoQuicktagsMigrator {
 	 *
 	 * With this format, the URL ends up being stored as $attr[0]. This helper function takes
 	 * that value and overwrites $url (where the URL should be), and then returns them both.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @param string|array $attr An empty string if there's no attributes in the shortcode, otherwise an array.
 	 * @param string       $url  The existing shortcode content (between the shortcodes), which should be the URL.
@@ -180,6 +190,8 @@ class VipersVideoQuicktagsMigrator {
 	/**
 	 * YouTube embeds. The actual embed is handled directly by WordPress core.
 	 *
+	 * @since 1.0.0
+	 *
 	 * @param array|string $attr Shortcode attributes. Optional.
 	 * @param string       $url  The URL attempting to be embedded.
 	 * @param string       $tag  The shortcode tag being used. This will be "youtube".
@@ -200,6 +212,8 @@ class VipersVideoQuicktagsMigrator {
 
 	/**
 	 * Dailymotion embeds. The actual embed is handled directly by WordPress core.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @param array|string $attr Shortcode attributes. Optional.
 	 * @param string       $url  The URL attempting to be embedded.
@@ -227,6 +241,8 @@ class VipersVideoQuicktagsMigrator {
 	/**
 	 * Vimeo embeds. The actual embed is handled directly by WordPress core.
 	 *
+	 * @since 1.0.0
+	 *
 	 * @param array|string $attr Shortcode attributes. Optional.
 	 * @param string       $url  The URL attempting to be embedded.
 	 * @param string       $tag  The shortcode tag being used. This will be "vimeo".
@@ -247,6 +263,8 @@ class VipersVideoQuicktagsMigrator {
 
 	/**
 	 * Metacafe embeds. The actual embed is handled by a separate callback function.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @param array|string $attr Shortcode attributes. Optional.
 	 * @param string       $url  The URL attempting to be embedded.
@@ -270,6 +288,8 @@ class VipersVideoQuicktagsMigrator {
 	/**
 	 * Metacafe video embed handler callback.
 	 *
+	 * @since 1.0.0
+	 *
 	 * @param array  $matches The RegEx matches from the provided regex when calling wp_embed_register_handler().
 	 * @param array  $attr    Embed attributes.
 	 * @param string $url     The original URL that was matched by the regex.
@@ -286,6 +306,8 @@ class VipersVideoQuicktagsMigrator {
 	 *
 	 * If just a video ID was used, then an error message is shown.
 	 * If a full URL was used, then it's handed off to WordPress core as a last-ditch attempt at embedding.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @param array|string $attr Shortcode attributes. Optional.
 	 * @param string       $url  The URL attempting to be embedded.
@@ -344,6 +366,8 @@ class VipersVideoQuicktagsMigrator {
 
 /**
  * Spins up an instance of the plugin's class if one doesn't already exist, then returns it.
+ *
+ * @since 1.0.0
  *
  * @return VipersVideoQuicktagsMigrator The instance of this class.
  */
