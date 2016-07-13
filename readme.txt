@@ -36,7 +36,7 @@ You don't need them anymore. Just paste the video URL on its own line in your po
 
 = How do I control the default embed size? This plugin doesn't have a settings page! =
 
-You can do that directly within WordPress at Settings → Media. Note that embeds stay proportionally sized so those settings only control the maximum dimensions.
+Make sure your theme is telling WordPress how wide it's content area is. See [the Content Width Codex article](https://codex.wordpress.org/Content_Width) for further details.
 
 = Why can't this plugin do [...] that Viper's Video Quicktags plugin used to do? =
 
