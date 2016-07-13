@@ -346,7 +346,7 @@ class VipersVideoQuicktagsMigrator {
 		);
 
 		// Before https://github.com/Automattic/jetpack/pull/4376 this array was numeric
-		if ( wp_is_numeric_array( $shortcode_includes ) ) {
+		if ( is_numeric( key( $shortcode_includes ) ) ) {
 			foreach ( $shortcode_includes as $key => $file ) {
 				$basename = substr( basename( $file ), 0, - 4 );
 
