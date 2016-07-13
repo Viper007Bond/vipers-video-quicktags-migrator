@@ -4,7 +4,7 @@
 
 Plugin Name:  Viper's Video Quicktags Migrator
 Plugin URI:   http://www.viper007bond.com/wordpress-plugins/vipers-video-quicktags/
-Version:      1.0
+Version:      1.1.0
 Description:  Parses legacy shortcodes from the retired Viper's Video Quicktags plugin using the embed functionality that's built directly into WordPress itself.
 Author:       Alex Mills (Viper007Bond)
 Author URI:   http://www.viper007bond.com/
@@ -29,6 +29,8 @@ class VipersVideoQuicktagsMigrator {
 		}
 
 		$this->add_shortcodes_and_embed_handlers();
+
+		$this->register_compatibility_filters();
 	}
 
 	/**
@@ -50,8 +52,7 @@ class VipersVideoQuicktagsMigrator {
 				),
 				'deactivate-plugin_' . $vvq_file
 			);
-		}
-		else {
+		} else {
 			$deactivate_url = add_query_arg( 's', rawurlencode( "Viper's Video Quicktags" ), admin_url( 'plugins.php' ) );
 		}
 
@@ -99,6 +100,15 @@ class VipersVideoQuicktagsMigrator {
 		add_shortcode( 'ifilm', array( $this, 'shortcode_dead_service' ) );
 		add_shortcode( 'spike', array( $this, 'shortcode_dead_service' ) );
 		add_shortcode( 'myspace', array( $this, 'shortcode_dead_service' ) );
+	}
+
+	/**
+	 * Registers some filter callbacks for compatibility with other plugins.
+	 *
+	 * @since 1.1.0
+	 */
+	public function register_compatibility_filters() {
+		add_filter( 'jetpack_shortcodes_to_include', array( $this, 'compatibility_jetpack_shortcodes_to_include' ) );
 	}
 
 	/**
@@ -154,12 +164,10 @@ class VipersVideoQuicktagsMigrator {
 		// Equals sign between the shortcode tag and value with value inside of quotes
 		if ( preg_match( '#=("|\')(.*?)\1#', $attr[0], $match ) ) {
 			$url = $match[2];
-		}
-		// Equals sign between the shortcode tag and value with value unquoted
+		} // Equals sign between the shortcode tag and value with value unquoted
 		elseif ( '=' == substr( $attr[0], 0, 1 ) ) {
 			$url = substr( $attr[0], 1 );
-		}
-		// Normal with a space between the shortcode and the value
+		} // Normal with a space between the shortcode and the value
 		else {
 			$url = $attr[0];
 		}
@@ -297,6 +305,40 @@ class VipersVideoQuicktagsMigrator {
 		// Otherwise let WordPress core handle it, likely resulting in a plain, clickable link.
 		// This lets visitors click through if they want, but also other plugins to provide embed support somehow.
 		return $GLOBALS['wp_embed']->shortcode( $attr, $url, $tag );
+	}
+
+	/**
+	 * Stops Jetpack from registering shortcodes that need to be handled by this plugin instead.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $shortcode_includes Array of paths to include that will register various shortcodes. 
+	 *
+	 * @return array The previous array with a few entries removed that this plugin will handle instead.
+	 */
+	public function compatibility_jetpack_shortcodes_to_include( $shortcode_includes ) {
+		$files_to_disable = array(
+			'dailymotion',
+			'vimeo',
+			'youtube',
+		);
+
+		// Before https://github.com/Automattic/jetpack/pull/4376 this array was numeric
+		if ( wp_is_numeric_array( $shortcode_includes ) ) {
+			foreach ( $shortcode_includes as $key => $file ) {
+				$basename = substr( basename( $file ), 0, - 4 );
+
+				if ( in_array( $basename, $files_to_disable ) ) {
+					unset( $shortcode_includes[ $key ] );
+				}
+			}
+		} else {
+			foreach ( $files_to_disable as $file_to_disable ) {
+				unset( $shortcode_includes[ $file_to_disable ] );
+			}
+		}
+
+		return $shortcode_includes;
 	}
 }
 
