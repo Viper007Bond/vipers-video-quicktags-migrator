@@ -54,5 +54,8 @@ Autoplay is lame anyway! :)
 
 == Changelog ==
 
-= 1.0 =
+= 1.1.0 =
+* Jetpack plugin compatibility. Should fix broken embeds if you have the "Shortcode Embeds" module enabled.
+
+= 1.0.0 =
 * Initial release.
