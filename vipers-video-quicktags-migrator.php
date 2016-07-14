@@ -357,7 +357,7 @@ class VipersVideoQuicktagsMigrator {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param array $shortcode_includes Array of paths to include that will register various shortcodes. 
+	 * @param array $shortcode_includes Array of paths to include that will register various shortcodes.
 	 *
 	 * @return array The previous array with a few entries removed that this plugin will handle instead.
 	 */
