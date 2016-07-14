@@ -312,9 +312,9 @@ class VipersVideoQuicktagsMigrator {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param array  $attr Shortcode attributes. Optional.
-	 * @param string $url  The URL attempting to be embedded.
-	 * @param string $tag  The shortcode tag being used.
+	 * @param array|string $attr Shortcode attributes. Optional.
+	 * @param string       $url  The URL attempting to be embedded.
+	 * @param string       $tag  The shortcode tag being used.
 	 *
 	 * @return string|void The result of wp_video_shortcode(), ideally HTML content to display the video.
 	 */
