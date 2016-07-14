@@ -4,7 +4,7 @@
 
 Plugin Name:  Viper's Video Quicktags Migrator
 Plugin URI:   http://www.viper007bond.com/wordpress-plugins/vipers-video-quicktags/
-Version:      1.1.0
+Version:      1.2.0
 Description:  Parses legacy shortcodes from the retired Viper's Video Quicktags plugin using the embed functionality that's built directly into WordPress itself.
 Author:       Alex Mills (Viper007Bond)
 Author URI:   http://www.viper007bond.com/
@@ -82,17 +82,11 @@ class VipersVideoQuicktagsMigrator {
 		add_shortcode( 'metacafe', array( $this, 'shortcode_metacafe' ) );
 		wp_embed_register_handler( 'metacafe', '#https?://(www\.)?metacafe\.com/watch/([\d-]+)#i', array( $this, 'embed_handler_metacafe' ) );
 
-		// These can just be handled by WordPress core directly.
-		// They'll either embed or they'll end up as a clickable link.
-		add_shortcode( 'flickrvideo', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		add_shortcode( 'videofile', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		add_shortcode( 'video', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		add_shortcode( 'avi', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		add_shortcode( 'mpeg', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		add_shortcode( 'wmv', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		add_shortcode( 'flash', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		add_shortcode( 'flv', array( $GLOBALS['wp_embed'], 'shortcode' ) );
-		add_shortcode( 'quicktime', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		// WordPress supports embedding certain video file types directly.
+		if ( function_exists( 'wp_video_shortcode' ) ) {
+			add_shortcode( 'flv', array( $this, 'video_shortcode_wrapper' ) );
+			add_shortcode( 'wmv', array( $this, 'video_shortcode_wrapper' ) );
+		}
 
 		// These services are dead or no longer supported by this plugin due to unpopularity.
 		// If a full video URL was passed to the shortcode, then it'll end up as a clickable link.
@@ -106,6 +100,15 @@ class VipersVideoQuicktagsMigrator {
 		add_shortcode( 'ifilm', array( $this, 'shortcode_dead_service' ) );
 		add_shortcode( 'spike', array( $this, 'shortcode_dead_service' ) );
 		add_shortcode( 'myspace', array( $this, 'shortcode_dead_service' ) );
+
+		// Run everything else though the code that runs when you paste a URL on its own line.
+		// These will end up as clickable links unless another plugin can handle them.
+		add_shortcode( 'flickrvideo', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'videofile', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'avi', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'mpeg', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'flash', array( $GLOBALS['wp_embed'], 'shortcode' ) );
+		add_shortcode( 'quicktime', array( $GLOBALS['wp_embed'], 'shortcode' ) );
 	}
 
 	/**
@@ -299,6 +302,26 @@ class VipersVideoQuicktagsMigrator {
 	 */
 	public function embed_handler_metacafe( $matches, $attr, $url, $rawattr ) {
 		return '<iframe width="' . esc_attr( $attr['width'] ) . '" height="' . esc_attr( $attr['height'] ) . '" src="' . esc_url( 'http://www.metacafe.com/embed/' . $matches[2] . '/' ) . '" frameborder="0" allowfullscreen></iframe>';
+	}
+
+	/**
+	 * Shortcode handler for FLV and WMV which are supported natively by WordPress via the [video] shortcode.
+	 * This reformats the parameters to match what WordPress expects and then lets WordPress do the work.
+	 *
+	 * @see   wp_video_shortcode()
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param array  $attr Shortcode attributes. Optional.
+	 * @param string $url  The URL attempting to be embedded.
+	 * @param string $tag  The shortcode tag being used.
+	 *
+	 * @return string|void The result of wp_video_shortcode(), ideally HTML content to display the video.
+	 */
+	public function video_shortcode_wrapper( $attr, $url, $tag ) {
+		$attr['src'] = $url;
+
+		return wp_video_shortcode( $attr );
 	}
 
 	/**
