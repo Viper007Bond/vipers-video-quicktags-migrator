@@ -54,6 +54,10 @@ Autoplay is lame anyway! :)
 
 == Changelog ==
 
+= 1.2.0 =
+* Don't take over WordPress's `[video]` shortcode.
+* Alias the `[flv]` and `[wmv]` shortcodes to WordPress's `[video]` shortcode since it can handle those file types out of the box.
+
 = 1.1.0 =
 * Jetpack plugin compatibility. Should fix broken embeds if you have the "Shortcode Embeds" module enabled.
 
