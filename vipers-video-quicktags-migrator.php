@@ -3,12 +3,14 @@
 **************************************************************************
 
 Plugin Name:  Viper's Video Quicktags Migrator
-Plugin URI:   http://www.viper007bond.com/wordpress-plugins/vipers-video-quicktags/
-Version:      1.2.0
-Description:  Parses legacy shortcodes from the retired Viper's Video Quicktags plugin using the embed functionality that's built directly into WordPress itself.
+Plugin URI:   https://alex.blog/tag/vipers-video-quicktags/
+Version:      2.0.1
+Description:  Migrates legacy shortcodes from the retired Viper's Video Quicktags plugin to the embed functionality that's built directly into WordPress itself.
 Author:       Alex Mills (Viper007Bond)
-Author URI:   http://www.viper007bond.com/
+Author URI:   https://alex.blog/
 Text Domain:  vipers-video-quicktags-migrator
+License:      GPL2
+License URI:  https://www.gnu.org/licenses/gpl-2.0.html
 
 **************************************************************************/
 
@@ -19,8 +21,6 @@ class VipersVideoQuicktagsMigrator {
 	 * @since 1.0.0
 	 */
 	function __construct() {
-		load_plugin_textdomain( 'vipers-video-quicktags-migrator' );
-
 		// To avoid weirdness, bail if the original plugin is still active
 		if ( class_exists( 'VipersVideoQuicktags' ) ) {
 			if ( current_user_can( 'activate_plugins' ) ) {
@@ -319,6 +319,9 @@ class VipersVideoQuicktagsMigrator {
 	 * @return string|void The result of wp_video_shortcode(), ideally HTML content to display the video.
 	 */
 	public function video_shortcode_wrapper( $attr, $url, $tag ) {
+		if ( ! is_array( $attr ) ) {
+			$attr = array();
+		}
 		$attr['src'] = $url;
 
 		return wp_video_shortcode( $attr );
