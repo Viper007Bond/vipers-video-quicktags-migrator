@@ -1,10 +1,10 @@
-fsrc<?php /*
+<?php /*
 
 **************************************************************************
 
 Plugin Name:  Viper's Video Quicktags Migrator
 Plugin URI:   https://alex.blog/tag/vipers-video-quicktags/
-Version:      1.2.1
+Version:      1.2.2
 Description:  Parses legacy shortcodes from the retired Viper's Video Quicktags plugin using the embed functionality that's built directly into WordPress itself.
 Author:       Alex Mills (Viper007Bond)
 Author URI:   https://alex.blog/

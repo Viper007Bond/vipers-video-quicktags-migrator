@@ -54,6 +54,9 @@ Autoplay is lame anyway! :)
 
 == Changelog ==
 
+= 1.2.2 =
+* Remove characters that I fat-fingered in. Oops!
+
 = 1.2.1 =
 * Fix PHP warning.
 
