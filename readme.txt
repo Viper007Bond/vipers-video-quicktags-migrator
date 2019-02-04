@@ -1,7 +1,7 @@
 === Viper's Video Quicktags Migrator ===
 Contributors: Viper007Bond
 Requires at least: 2.9
-Tested up to: 4.9
+Tested up to: 5.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -53,6 +53,9 @@ Instead WordPress directly asks YouTube itself for the embed HTML for every embe
 Autoplay is lame anyway! :)
 
 == Changelog ==
+
+= 1.2.1 =
+* Fix PHP warning.
 
 = 1.2.0 =
 * Don't take over WordPress's `[video]` shortcode.
